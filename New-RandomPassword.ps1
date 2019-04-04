@@ -6,7 +6,7 @@ function New-RandomPassword {
     .DESCRIPTION
     Generates a new random password using ASCII characters 32 (space) through 126 (tilde)
 
-    PARAMETER PasswordLength
+    .PARAMETER PasswordLength
     The length of the new password
     
     .PARAMETER MinUpperCase
