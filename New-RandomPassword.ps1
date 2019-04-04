@@ -1,12 +1,12 @@
 function New-RandomPassword {
-	<#
-	.SYNOPSIS
-	Generates a new random password
+    <#
+    .SYNOPSIS
+    Generates a new random password
 
-	.DESCRIPTION
+    .DESCRIPTION
     Generates a new random password using ASCII characters 32 (space) through 126 (tilde)
 
-	.PARAMETER PasswordLength
+    PARAMETER PasswordLength
     The length of the new password
     
     .PARAMETER MinUpperCase
@@ -35,18 +35,18 @@ function New-RandomPassword {
     Number of seconds to attempt to generate a new password
     Depending on your restrictions you may hit this
 
-	.EXAMPLE
+    .EXAMPLE
     New-RandomPassword
     New-RandomPassword -Forbidden " |``~"
     New-RandomPassword -PasswordLength 60 -MinUpperCase 5 -MinLowerCase 5 -MinDigit 2 -MinSpecial 5 -Forbidden " " -PreventRepeatingChars -TimeoutSec 30
 
-	.OUTPUTS
-	String
+    .OUTPUTS
+    String
 
     #>
     [CmdletBinding()]
 	Param(
-		[Parameter(Mandatory = $false)]
+	[Parameter(Mandatory = $false)]
         [int]$PasswordLength = 30,
 
         [Parameter(Mandatory = $false)]
@@ -104,7 +104,7 @@ function New-RandomPassword {
         If ( ($PreventRepeats -eq $false) -or ($NewPassword -notmatch "(.)\1") ) {
             If ( [Regex]::Matches($NewPassword, "[0-9]").Count -ge $MinDigit) {
                 If ( [Regex]::Matches($NewPassword, "[A-Z]").Count -ge $MinUpperCase) {
-			        If ( [Regex]::Matches($NewPassword, "[a-z]").Count -ge $MinLowerCase) {
+		    If ( [Regex]::Matches($NewPassword, "[a-z]").Count -ge $MinLowerCase) {
                         If ( [Regex]::Matches($NewPassword, "[$(-join $SpecialArray)]").Count -ge $MinSpecial) {
                             $Valid = $true
                         }
@@ -114,5 +114,5 @@ function New-RandomPassword {
         }
     }
     If ( (Get-Date) -ge $Timeout ) { return $null }
-	return $NewPassword
+    return $NewPassword
 }
