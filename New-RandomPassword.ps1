@@ -94,7 +94,7 @@ function New-RandomPassword {
 
     $Valid = $false
     $Timeout = (Get-Date).AddSeconds($TimeoutSec)
-	While ( ($Valid -eq $false) -and ((Get-Date) -lt $Timeout) ) {
+    While ( ($Valid -eq $false) -and ((Get-Date) -lt $Timeout) ) {
 
         [string]$NewPassword = "" 
         For ( $i = 0; $i -lt $PasswordLength; $i++ ) {
