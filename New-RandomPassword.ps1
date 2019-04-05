@@ -39,6 +39,9 @@ function New-RandomPassword {
     New-RandomPassword
     New-RandomPassword -Forbidden " |``~"
     New-RandomPassword -PasswordLength 60 -MinUpperCase 5 -MinLowerCase 5 -MinDigit 2 -MinSpecial 5 -Forbidden " " -PreventRepeatingChars -TimeoutSec 30
+    
+    .NOTES
+    Generates a random seed for use in Get-Random, as opposed to the default of [Environment]::TickCount which can be mimicked/attacked
 
     .OUTPUTS
     String
@@ -91,14 +94,21 @@ function New-RandomPassword {
     Foreach ( $Char in [char[]]$Forbidden ) { $CharacterPool.Remove($Char) | Out-Null }
 
     If ( $CharacterPool.Count -lt 2 ) { return $null }
-
+    
+    function Get-Rng {
+        $RandomBytes = New-Object System.Byte[] 4
+        $Random = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
+        $Random.GetBytes($RandomBytes)
+        [BitConverter]::ToInt32($RandomBytes, 0)
+    }
+    
     $Valid = $false
     $Timeout = (Get-Date).AddSeconds($TimeoutSec)
     While ( ($Valid -eq $false) -and ((Get-Date) -lt $Timeout) ) {
 
         [string]$NewPassword = "" 
         For ( $i = 0; $i -lt $PasswordLength; $i++ ) {
-            $NewPassword += $CharacterPool[(Get-Random -Minimum 0 -Maximum ($CharacterPool.Count-1))]
+            $NewPassword += $CharacterPool[(Get-Random -Minimum 0 -Maximum ($CharacterPool.Count-1) -SetSeed (Get-Rng))]
         }
 
         If ( ($PreventRepeats -eq $false) -or ($NewPassword -notmatch "(.)\1") ) {
